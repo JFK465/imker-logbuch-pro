@@ -1,7 +1,7 @@
 export const NAV_LINKS = [
-  { label: "Problem", href: "/#problem" },
-  { label: "Lösung", href: "/#loesung" },
-  { label: "Funktionen", href: "/#funktionen" },
+  { label: "Demo", href: "/demo" },
+  { label: "Wetter", href: "/weather" },
+  { label: "Ernte", href: "/harvest" },
   { label: "Blog", href: "/blog" },
 ]
 
@@ -14,7 +14,9 @@ export const SOCIAL_LINKS = {
 
 export const FOOTER_LINKS = {
   produkt: [
-    { label: "Funktionen", href: "/#funktionen" },
+    { label: "Demo", href: "/demo" },
+    { label: "Wetter", href: "/weather" },
+    { label: "Ernte-Tracker", href: "/harvest" },
     { label: "Blog", href: "/blog" },
   ],
   unternehmen: [{ label: "Kontakt", href: "mailto:kontakt@imker-logbuch-pro.de" }],
