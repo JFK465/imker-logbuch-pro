@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import { DemoCTA } from "./DemoCTA"
 
 interface HeroSectionProps {
   produktName?: string
@@ -52,6 +53,9 @@ export function HeroSection({
               <Link href="#funktionen">Mehr erfahren</Link>
             </Button>
           </div>
+
+          {/* Demo CTA */}
+          <DemoCTA />
 
           {/* Features List */}
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
