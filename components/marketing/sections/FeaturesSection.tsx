@@ -1,17 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import type { ReactNode } from "react"
 import {
   QrCode,
   FileText,
   CloudRain,
   Mic,
-  Lock,
-  Globe,
-  Smartphone,
   TrendingUp,
 } from "lucide-react"
+import { AnimatedSection } from "@/components/ui/animated-section"
+import { HoneycombPattern } from "@/components/ui/decorative-elements"
+import { FeatureCard } from "@/components/ui/feature-card"
 
 interface Feature {
-  icon: React.ReactNode
+  icon: ReactNode
   name: string
   benefit: string
   painPoint: string
@@ -75,45 +77,46 @@ export function FeaturesSection({
   schmerzAufloesung = "Alles im Griff, vom Smartphone aus",
 }: FeaturesSectionProps) {
   return (
-    <section id="funktionen" className="py-16 md:py-24 bg-muted/30">
-      <div className="container px-4 md:px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{uberschrift}</h2>
-          <p className="text-xl text-muted-foreground">{unteruberschrift}</p>
-        </div>
+    <section id="funktionen" className="relative py-16 md:py-24 bg-gradient-to-br from-honey-50 via-cream to-earth-50 overflow-hidden">
+      {/* Honeycomb pattern overlay */}
+      <HoneycombPattern className="opacity-20" />
 
-        {/* Features Grid */}
+      <div className="container px-4 md:px-6 relative z-10">
+        {/* Section Header */}
+        <AnimatedSection direction="up" delay={0}>
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-earth-800">
+              {uberschrift}
+            </h2>
+            <p className="text-xl text-earth-500">{unteruberschrift}</p>
+          </div>
+        </AnimatedSection>
+
+        {/* Features Grid using FeatureCard */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {features.map((feature, index) => (
-            <Card
+            <FeatureCard
               key={index}
-              className="border-2 hover:border-primary/50 transition-colors"
-            >
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
-                  {feature.icon}
-                </div>
-                <CardTitle className="text-xl">{feature.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-muted-foreground">{feature.benefit}</p>
-                <p className="text-sm text-primary font-medium">
-                  {feature.painPoint}
-                </p>
-              </CardContent>
-            </Card>
+              icon={feature.icon}
+              title={feature.name}
+              description={feature.benefit}
+              detail={feature.painPoint}
+              index={index}
+            />
           ))}
         </div>
 
         {/* Bottom Note */}
-        <div className="mt-12 text-center">
-          <p className="text-lg font-medium text-foreground mb-2">
-            {schmerzAufloesung}
-          </p>
-          <p className="text-muted-foreground">
-            Alle Features funktionieren auch offline am Bienenstand.
-          </p>
-        </div>
+        <AnimatedSection direction="up" delay={0.3}>
+          <div className="mt-12 text-center">
+            <p className="text-lg font-semibold font-display text-earth-800 mb-2">
+              {schmerzAufloesung}
+            </p>
+            <p className="text-earth-500">
+              Alle Features funktionieren auch offline am Bienenstand.
+            </p>
+          </div>
+        </AnimatedSection>
       </div>
     </section>
   )

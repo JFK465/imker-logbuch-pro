@@ -3,10 +3,48 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import type { Metadata } from "next"
+import { siteConfig } from "@/lib/seo-config"
+import { ArticleSchema, BreadcrumbSchema } from "@/components/seo/JsonLd"
+import { marked } from "marked"
 
 export async function generateStaticParams() {
   const posts = getBlogPosts()
   return posts.map((post) => ({ slug: post.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const post = getBlogPost(params.slug)
+
+  if (!post) {
+    return {}
+  }
+
+  return {
+    title: post.title,
+    description: post.description,
+    alternates: {
+      canonical: `/blog/${params.slug}`,
+    },
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.description,
+      url: `${siteConfig.url}/blog/${params.slug}`,
+      publishedTime: post.date,
+      tags: post.tags,
+      siteName: siteConfig.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+    },
+  }
 }
 
 export default async function BlogPostPage({
@@ -20,8 +58,24 @@ export default async function BlogPostPage({
     notFound()
   }
 
+  const htmlContent = marked(post.content) as string
+
   return (
     <article className="min-h-screen py-12 md:py-24">
+      <ArticleSchema
+        headline={post.title}
+        datePublished={post.date}
+        author={post.author || "Imker-Logbuch Pro Team"}
+        description={post.description}
+        url={`${siteConfig.url}/blog/${params.slug}`}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Startseite", url: siteConfig.url },
+          { name: "Blog", url: `${siteConfig.url}/blog` },
+          { name: post.title, url: `${siteConfig.url}/blog/${params.slug}` },
+        ]}
+      />
       <div className="container px-4 md:px-6 max-w-3xl mx-auto">
         <Button asChild variant="ghost" className="mb-8">
           <Link href="/blog">
@@ -57,7 +111,7 @@ export default async function BlogPostPage({
 
         <div
           className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
         />
 
         <div className="mt-12 pt-8 border-t">

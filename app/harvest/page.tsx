@@ -1,16 +1,29 @@
-import { LabelGenerator } from '@/components/harvest/LabelGenerator'
+import type { Metadata } from "next"
+import dynamic from "next/dynamic"
+
+const LabelGenerator = dynamic(
+  () => import("@/components/harvest/LabelGenerator").then(m => ({ default: m.LabelGenerator })),
+  { ssr: false }
+)
+
+export const metadata: Metadata = {
+  title: "Honig-Ernte dokumentieren und Etiketten generieren",
+  description:
+    "Dokumentieren Sie Ihre Honig-Ernte digital und generieren Sie professionelle Etiketten für Ihre Gläser. Chargenverfolgung leicht gemacht.",
+  alternates: { canonical: "/harvest" },
+}
 
 export default function HarvestPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Ernte-Tracker
+          <h1 className="text-4xl font-bold text-earth-800 mb-4">
+            Honig-Ernte dokumentieren und Etiketten erstellen
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Dokumentiere deine Honig-Ernte und generiere professionelle Etiketten
-            für deine Gläser.
+          <p className="text-xl text-earth-500 max-w-2xl mx-auto">
+            Dokumentieren Sie Ihre Honig-Ernte und generieren Sie professionelle Etiketten
+            für Ihre Gläser.
           </p>
         </div>
 

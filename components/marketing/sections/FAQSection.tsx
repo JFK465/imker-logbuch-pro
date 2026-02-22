@@ -1,8 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
+import { faqData } from "@/lib/faq-data"
+import { AnimatedSection } from "@/components/ui/animated-section"
 
 interface FAQ {
   question: string
@@ -15,83 +18,87 @@ interface FAQSectionProps {
   faqs?: FAQ[]
 }
 
-const defaultFAQs: FAQ[] = [
-  {
-    question: "Was bedeutet 'Beta'?",
-    answer:
-      "Beta bedeutet, dass Imker-Logbuch Pro sich aktiv in Entwicklung befindet. Sie erhalten Zugang zu den bereits verfügbaren Funktionen und können das Produkt aktiv mitgestalten. Es kann noch Ecken und Kanten geben -- dafür ist Ihr Feedback umso wertvoller.",
-  },
-  {
-    question: "Was kostet die Beta?",
-    answer:
-      "Die Beta ist komplett kostenlos. Wir informieren Sie rechtzeitig, bevor kostenpflichtige Pläne starten. Beta-Tester erhalten dauerhaft bessere Konditionen.",
-  },
-  {
-    question: "Wie werden meine Daten geschützt?",
-    answer:
-      "Ihre Daten werden verschlüsselt übertragen und gespeichert. Wir sind DSGVO-konform mit Servern in Deutschland. Mehr Details finden Sie in unserer Datenschutzerklärung.",
-  },
-  {
-    question: "Kann ich mich jederzeit abmelden?",
-    answer:
-      "Ja. Ein Klick genügt. Ihre Daten werden auf Wunsch vollständig gelöscht.",
-  },
-  {
-    question: "Wann startet die Beta?",
-    answer:
-      "Die Beta ist jetzt gestartet. Melden Sie sich an, um sofort dabei zu sein.",
-  },
-  {
-    question: "Wie kann ich Feedback geben?",
-    answer:
-      "Nutzen Sie unser Kontaktformular auf der Anmeldeseite oder schreiben Sie uns -- wir lesen und beantworten jede Nachricht persönlich.",
-  },
-]
-
 export function FAQSection({
   title = "Häufige Fragen -- ehrlich beantwortet",
   subtitle = "",
-  faqs = defaultFAQs,
+  faqs = faqData,
 }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
-    <section className="py-16 md:py-24 bg-muted/30">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-cream to-honey-50">
       <div className="container px-4 md:px-6 max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-          {subtitle && (
-            <p className="text-xl text-muted-foreground">{subtitle}</p>
-          )}
-        </div>
+        {/* Section Header */}
+        <AnimatedSection direction="up" delay={0}>
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-earth-800">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="text-xl text-earth-500">{subtitle}</p>
+            )}
+          </div>
+        </AnimatedSection>
 
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-background rounded-lg border overflow-hidden"
-            >
-              <button
-                onClick={() =>
-                  setOpenIndex(openIndex === index ? null : index)
-                }
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
-                aria-expanded={openIndex === index}
-              >
-                <span className="font-medium">{faq.question}</span>
-                {openIndex === index ? (
-                  <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                )}
-              </button>
-              {openIndex === index && (
-                <div className="p-4 pt-0 text-muted-foreground">
-                  {faq.answer}
+        {/* FAQ Accordion */}
+        <div className="space-y-3">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index
+            return (
+              <AnimatedSection key={index} direction="up" delay={0.05 + index * 0.06}>
+                <div
+                  className={cn(
+                    "rounded-xl border overflow-hidden transition-colors duration-200",
+                    isOpen
+                      ? "border-honey-300 bg-cream shadow-warm"
+                      : "border-honey-100 bg-white hover:bg-honey-50/50"
+                  )}
+                >
+                  <button
+                    onClick={() =>
+                      setOpenIndex(isOpen ? null : index)
+                    }
+                    className="w-full flex items-center justify-between p-5 text-left"
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-content-${index}`}
+                  >
+                    <span className="font-medium text-earth-800 pr-4">
+                      {faq.question}
+                    </span>
+                    <motion.div
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="flex-shrink-0"
+                    >
+                      <ChevronDown
+                        className={cn(
+                          "h-5 w-5 transition-colors",
+                          isOpen ? "text-honey-500" : "text-earth-400"
+                        )}
+                      />
+                    </motion.div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div id={`faq-content-${index}`} className="px-5 pb-5 text-earth-600 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              )}
-            </div>
-          ))}
+              </AnimatedSection>
+            )
+          })}
         </div>
       </div>
     </section>
